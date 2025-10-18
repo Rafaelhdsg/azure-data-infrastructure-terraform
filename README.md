@@ -18,9 +18,58 @@ This project demonstrates the automated provisioning of essential Azure data inf
 README.md
 main.tf
 variables.tf
+locals.tf
+resource_groups.tf
+keyvault.tf
+storages.tf
 outputs.tf
+terraform.tfvars
 providers.tf
 ```
+
+## Description of key files:
+*   **main.tf:** Provider and basic setup.
+*   **variables.tf:** Definitions for Resource Groups, Key Vaults, and Storage Accounts.
+*   **locals.tf:** Flattened and normalized maps for dynamic provisioning.
+*   **resource_groups.tf:** Dynamic creation of Resource Groups.
+*   **keyvault.tf:** Dynamic creation of Key Vaults and associated secrets.
+*   **storages.tf:** Dynamic creation of Storage Accounts.
+*   **outputs.tf:** Outputs for deployed resources.
+*   **terraform.tfvars:** User-specific variable values for environment configuration.
+
+## Architecture Overview
+
+- **Resource Groups**: Dynamically created based on a configuration map.
+- **Key Vaults**: Multiple Key Vaults per Resource Group, automatically provisioned.
+- **Secrets**: Each Key Vault can contain one or multiple secrets, demonstrating secure secret management best practices.
+- **Storage Accounts**: Multiple per Resource Group, with configurable replication and tier.
+
+### Configuration Example (`terraform.tfvars`)
+
+```hcl
+location = "westus3"
+
+resource_groups = {
+  rg-data-prod = {
+    key_vaults = [
+      { name = "kv-prod-data" },
+      { name = "kv-prod-analytics" }
+    ]
+    storages = [
+      { name = "stprodlogs" },
+      { name = "stprodshared" }
+    ]
+  }
+
+  rg-data-dev = {
+    key_vaults = [
+      { name = "kv-dev-data" }
+    ]
+    storages = [
+      { name = "stdevshared" }
+    ]
+  }
+}
 
 ## Instructions for Use
 
@@ -43,15 +92,6 @@ providers.tf
     terraform init
     ```
     *Note: This project is configured for local state management by default. For production environments, consider configuring a remote backend (e.g., Azure Storage Account) as described in the 'Future Enhancements' section.* 
-
-3.  **Review and Customize Variables:**
-    Edit `variables.tf` or create a `terraform.tfvars` file to customize resource names, locations, and other parameters. Example `terraform.tfvars`:
-    ```hcl
-    resource_group_name = "rg-data-infra-dev-001"
-    location            = "East US"
-    storage_account_name = "stdatainfradev001"
-    key_vault_name       = "kv-data-infra-dev-001"
-    ```
 
 4.  **Generate an Execution Plan:**
     ```bash
@@ -76,10 +116,13 @@ Type `yes` when prompted to confirm.
 
 ## Outputs
 
-Upon successful deployment, Terraform will output important information about the created resources:
+## Outputs
 
-*   `storage_account_primary_blob_endpoint`: The primary blob endpoint for the Azure Storage Account.
-*   `key_vault_uri`: The URI of the Azure Key Vault.
+After deployment, Terraform will provide the following outputs:
+
+- **resource_groups** — Names of all created Resource Groups.
+- **key_vaults** — Names of all created Key Vaults.
+- **storages** — Names of all created Storage Accounts.
 
 ## Why This Project Matters
 
@@ -104,5 +147,3 @@ This project provides a robust, automated, and secure foundation for deploying A
 CloudOps | Data Infrastructure | IaC with Terraform
 
 📍[GitHub Profile](https://github.com/Rafaelhdsg)
-# azure-data-infrastructure-terraform
-Automated provisioning of Azure data infrastructure using Terraform. Demonstrates IaC best practices, secure deployment of Azure Storage Account and Key Vault, and modular, scalable design for data workloads in Microsoft Azure.
