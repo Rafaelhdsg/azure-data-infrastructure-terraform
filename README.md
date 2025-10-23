@@ -54,22 +54,22 @@ resource_groups = {
     key_vaults = [
       { name = "kv-prod-data" },
       { name = "kv-prod-analytics" }
-    ]
+    ],
     storages = [
       { name = "stprodlogs" },
       { name = "stprodshared" }
     ]
-  }
-
+  },
   rg-data-dev = {
     key_vaults = [
       { name = "kv-dev-data" }
-    ]
+    ],
     storages = [
       { name = "stdevshared" }
     ]
   }
 }
+```
 
 ## Instructions for Use
 
@@ -113,8 +113,6 @@ To destroy the provisioned resources, run:
 terraform destroy
 ```
 Type `yes` when prompted to confirm.
-
-## Outputs
 
 ## Outputs
 
